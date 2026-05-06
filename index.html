@@ -2408,8 +2408,8 @@ html{font-family:'DM Sans','Noto Sans TC',-apple-system,sans-serif;background:#F
 .cb2p-pnl.on{display:flex}
 /* Weekly report panel */
 .cb2pw-grid{display:grid;grid-template-columns:1fr 1fr;flex:1;overflow:hidden}
-.cb2pw-l{overflow:hidden;padding:11px 13px;display:flex;flex-direction:column;gap:9px;background:#f7faf9}
-.cb2pw-r{overflow:hidden;padding:11px 13px;display:flex;flex-direction:column;gap:9px;border-left:1px solid #e0eee9;background:#fff}
+.cb2pw-l{overflow-y:auto;overflow-x:hidden;padding:11px 13px;display:flex;flex-direction:column;gap:9px;background:#f7faf9}
+.cb2pw-r{overflow-y:auto;overflow-x:hidden;padding:11px 13px;display:flex;flex-direction:column;gap:9px;border-left:1px solid #e0eee9;background:#fff}
 .cb2-ph{display:flex;align-items:center;gap:10px;background:#fff;border-radius:9px;padding:10px;border:1px solid #e0eee9}
 .cb2-ring{width:64px;height:64px;border-radius:50%;background:conic-gradient(#38b299 0% 87%,#e0eee9 87% 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .cb2-rinni{width:50px;height:50px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column}
@@ -2466,7 +2466,8 @@ html{font-family:'DM Sans','Noto Sans TC',-apple-system,sans-serif;background:#F
 
 /* 右邊每格平均排版 */
 .cb2pw-r{
-  overflow:hidden;
+  overflow-y:auto;
+  overflow-x:hidden;
   padding:11px 13px;
   display:flex;
   flex-direction:column;
@@ -2475,9 +2476,9 @@ html{font-family:'DM Sans','Noto Sans TC',-apple-system,sans-serif;background:#F
   background:#fff;
 }
 
-/* 讓用餐、出入園、教師記錄也能平均撐開 */
+/* 讓用餐、出入園、教師記錄保留自然高度，超出時靠 cb2pw-r 滾動 */
 .cb2pw-r > .cb2-box{
-  flex:1;
+  flex:0 0 auto;
 }
 /* Pattern Analysis Tab */
 .cb2pt-inner{flex:1;overflow:hidden;padding:10px 14px;display:flex;flex-direction:column;gap:10px;background:#f7faf9}
@@ -2774,7 +2775,7 @@ html{font-family:'DM Sans','Noto Sans TC',-apple-system,sans-serif;background:#F
 <div class="sec-intro reveal">
   <!-- <div class="sec-tag" style="color:var(--orange)">Feature 05</div> -->
   <h2 class="sec-h">AI 員工｜智慧招生人員</h2>
-  <p class="sec-desc">即時查看競爭對手定價、AI 定價建議與招生報表，並透過對話助手快速生成招生文案與策略。點擊標籤切換功能。</p>
+  <p class="sec-desc">過去主管要把招生工作一項項交辦給不同同仁，等待、追進度、再彙整。導入 AI Agent 後，競品爬取、文案撰寫、家長回訪、報表彙整都由 Agent 自主完成，主管從交辦者變成審閱者。</p>
 </div>
 
 <style>
@@ -2888,11 +2889,177 @@ html{font-family:'DM Sans','Noto Sans TC',-apple-system,sans-serif;background:#F
 .rec2-fn-v{font-size:12px;font-weight:700;color:#ffcc88}
 </style>
 
+<style>
+.rec-ba-grid{display:grid;grid-template-columns:1fr 1fr;background:#0a0a12;border-top:1px solid rgba(255,255,255,0.06)}
+.rec-ba-col{padding:22px 24px;display:flex;flex-direction:column;gap:14px}
+.rec-ba-before{background:rgba(255,255,255,0.015);border-right:1px solid rgba(255,255,255,0.06)}
+.rec-ba-after{background:linear-gradient(180deg,rgba(224,122,0,0.05),rgba(224,122,0,0.01))}
+.rec-ba-hd{display:flex;flex-direction:column;gap:5px;padding-bottom:6px;border-bottom:1px dashed rgba(255,255,255,0.07)}
+.rec-ba-tag{align-self:flex-start;padding:3px 11px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.08)}
+.rec-ba-tag.on{background:rgba(224,122,0,0.18);color:var(--orange);border-color:rgba(224,122,0,0.3)}
+.rec-ba-h{font-size:17.5px;font-weight:700;color:#fff;letter-spacing:-0.01em;line-height:1.35}
+.rec-ba-sub{font-size:12.5px;color:rgba(255,255,255,0.5);line-height:1.55}
+.rec-ba-list{display:flex;flex-direction:column;gap:7px;flex:1}
+.rec-task{display:flex;gap:9px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 12px}
+.rec-task-arrow{font-size:14px;color:rgba(255,255,255,0.28);flex-shrink:0;padding-top:1px}
+.rec-task-body{flex:1;min-width:0}
+.rec-task-msg{font-size:13.5px;color:rgba(255,255,255,0.82);line-height:1.5}
+.rec-task-meta{font-size:11px;color:rgba(255,255,255,0.38);margin-top:3px}
+.rec-task-meta strong{color:rgba(255,255,255,0.62);font-weight:600}
+.rec-agent-log{display:flex;flex-direction:column;gap:7px;flex:1;position:relative}
+.rec-agent-row{display:grid;grid-template-columns:46px 26px 1fr;gap:9px;align-items:flex-start;background:rgba(224,122,0,0.05);border:1px solid rgba(224,122,0,0.18);border-radius:9px;padding:9px 12px}
+.rec-agent-time{font-size:11.5px;font-weight:700;color:var(--orange);font-family:'DM Sans',sans-serif;padding-top:1px;letter-spacing:0.02em}
+.rec-agent-icon{font-size:15.5px;flex-shrink:0;text-align:center;padding-top:1px}
+.rec-agent-body{min-width:0}
+.rec-agent-act{font-size:13.5px;color:rgba(255,255,255,0.92);line-height:1.45;font-weight:500}
+.rec-agent-out{font-size:11.5px;color:rgba(255,255,255,0.55);margin-top:3px;line-height:1.45}
+.rec-ba-pains,.rec-ba-wins{display:flex;flex-wrap:wrap;gap:5px;padding-top:8px;border-top:1px dashed rgba(255,255,255,0.07)}
+.rec-pain{font-size:11px;font-weight:600;padding:4px 9px;border-radius:5px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.07)}
+.rec-win{font-size:11px;font-weight:600;padding:4px 9px;border-radius:5px;background:rgba(76,200,140,0.12);color:#4dd68c;border:1px solid rgba(76,200,140,0.25)}
+@media(max-width:760px){.rec-ba-grid{grid-template-columns:1fr}.rec-ba-before{border-right:none;border-bottom:1px solid rgba(255,255,255,0.06)}}
+</style>
+
 <div class="dcard reveal">
   <div class="dcard-hd">
-    <div><div class="dcard-lbl">互動示意 · 桌面版</div><div class="dcard-title">AI 招生人員 · 競爭分析 ＋ 對話助手</div></div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0"><div class="dbadge db-orange">Recruitment AI</div><div style="font-size:13px;color:var(--g300);white-space:nowrap">點擊標籤頁切換功能</div></div>
+    <div><div class="dcard-lbl">互動示意 · AI Agent</div><div class="dcard-title">傳統招生人員 vs AI 招生 Agent</div></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0"><div class="dbadge db-orange">Recruitment AI</div><div style="font-size:13px;color:var(--g300);white-space:nowrap">導入前 vs 導入後</div></div>
   </div>
+  <div class="rec-ba-grid">
+    <!-- ── BEFORE ── -->
+    <div class="rec-ba-col rec-ba-before">
+      <div class="rec-ba-hd">
+        <div class="rec-ba-tag">導入前</div>
+        <div class="rec-ba-h">主管逐項交辦給不同同仁</div>
+        <div class="rec-ba-sub">事事要等人、進度難追、品質參差，主管多半時間花在追進度而非決策。</div>
+      </div>
+      <div class="rec-ba-list">
+        <div class="rec-task">
+          <div class="rec-task-arrow">→</div>
+          <div class="rec-task-body">
+            <div class="rec-task-msg">「請統計這週周邊 7 家競品月費與促銷。」</div>
+            <div class="rec-task-meta">交辦給 <strong>招生 A 同仁</strong> · 預計 1–2 天</div>
+          </div>
+        </div>
+        <div class="rec-task">
+          <div class="rec-task-arrow">→</div>
+          <div class="rec-task-body">
+            <div class="rec-task-msg">「幫我寫週末『春季招生說明會』活動文案。」</div>
+            <div class="rec-task-meta">交辦給 <strong>行銷 B 同仁</strong> · 預計 4 小時</div>
+          </div>
+        </div>
+        <div class="rec-task">
+          <div class="rec-task-arrow">→</div>
+          <div class="rec-task-body">
+            <div class="rec-task-msg">「打給上週來訪但沒報名的 8 組家長。」</div>
+            <div class="rec-task-meta">交辦給 <strong>招生 C 同仁</strong> · 預計半天</div>
+          </div>
+        </div>
+        <div class="rec-task">
+          <div class="rec-task-arrow">→</div>
+          <div class="rec-task-body">
+            <div class="rec-task-msg">「整理本月招生漏斗報表，週會用。」</div>
+            <div class="rec-task-meta">交辦給 <strong>助理 D 同仁</strong> · 預計 1 天</div>
+          </div>
+        </div>
+        <div class="rec-task">
+          <div class="rec-task-arrow">→</div>
+          <div class="rec-task-body">
+            <div class="rec-task-msg">「回覆官網本週 12 則家長詢問。」</div>
+            <div class="rec-task-meta">交辦給 <strong>客服 E 同仁</strong> · 即時但常漏</div>
+          </div>
+        </div>
+        <div class="rec-task">
+          <div class="rec-task-arrow">→</div>
+          <div class="rec-task-body">
+            <div class="rec-task-msg">「設計新一波 LINE 廣告素材，3 款 A/B 測試。」</div>
+            <div class="rec-task-meta">交辦給 <strong>設計 F 同仁</strong> · 預計 2 天</div>
+          </div>
+        </div>
+      </div>
+      <div class="rec-ba-pains">
+        <div class="rec-pain">⏱ 等回覆 1–2 天</div>
+        <div class="rec-pain">✗ 容易漏單</div>
+        <div class="rec-pain">∼ 品質參差</div>
+        <div class="rec-pain">📞 追進度耗時</div>
+      </div>
+    </div>
+    <!-- ── AFTER ── -->
+    <div class="rec-ba-col rec-ba-after">
+      <div class="rec-ba-hd">
+        <div class="rec-ba-tag on">導入後</div>
+        <div class="rec-ba-h">AI Agent 自主執行 · 主管只看結果</div>
+        <div class="rec-ba-sub">Agent 自動串接內部與外部資料、撰寫文案、撥打電話、發布素材，並把結果推送給主管。</div>
+      </div>
+      <div class="rec-agent-log">
+        <div class="rec-agent-row">
+          <div class="rec-agent-time">09:02</div>
+          <div class="rec-agent-icon">🔍</div>
+          <div class="rec-agent-body">
+            <div class="rec-agent-act">爬取 5 家競品最新月費與促銷</div>
+            <div class="rec-agent-out">→ 自動生成比較表，推送至主管 LINE</div>
+          </div>
+        </div>
+        <div class="rec-agent-row">
+          <div class="rec-agent-time">09:14</div>
+          <div class="rec-agent-icon">📊</div>
+          <div class="rec-agent-body">
+            <div class="rec-agent-act">產製本月招生漏斗報表</div>
+            <div class="rec-agent-out">→ 含 AI 評論：成功招生 +20%，廣告 ROI 達 3.2×</div>
+          </div>
+        </div>
+        <div class="rec-agent-row">
+          <div class="rec-agent-time">09:30</div>
+          <div class="rec-agent-icon">✍️</div>
+          <div class="rec-agent-body">
+            <div class="rec-agent-act">撰寫春季招生說明會活動文案 v1</div>
+            <div class="rec-agent-out">→ 含主圖、3 款貼文版本，已存入素材庫待主管核可</div>
+          </div>
+        </div>
+        <div class="rec-agent-row">
+          <div class="rec-agent-time">09:47</div>
+          <div class="rec-agent-icon">💬</div>
+          <div class="rec-agent-body">
+            <div class="rec-agent-act">自動回覆官網 3 則家長詢問</div>
+            <div class="rec-agent-out">→ 1 則高意向家長已轉接專人，附對話摘要</div>
+          </div>
+        </div>
+        <div class="rec-agent-row">
+          <div class="rec-agent-time">10:15</div>
+          <div class="rec-agent-icon">📞</div>
+          <div class="rec-agent-body">
+            <div class="rec-agent-act">語音 Agent 致電 8 組未報名家長</div>
+            <div class="rec-agent-out">→ 約到 2 組週末參觀，逐字稿與意向分數已存檔</div>
+          </div>
+        </div>
+        <div class="rec-agent-row">
+          <div class="rec-agent-time">10:32</div>
+          <div class="rec-agent-icon">⚠️</div>
+          <div class="rec-agent-body">
+            <div class="rec-agent-act">偵測歡樂天使新一波折扣</div>
+            <div class="rec-agent-out">→ 自動產出 3 種反制方案，推送主管決策</div>
+          </div>
+        </div>
+        <div class="rec-agent-row">
+          <div class="rec-agent-time">10:48</div>
+          <div class="rec-agent-icon">🎨</div>
+          <div class="rec-agent-body">
+            <div class="rec-agent-act">生成 LINE 廣告 3 款素材並上架 A/B 測試</div>
+            <div class="rec-agent-out">→ 預測 CTR +18%，將於 24h 後回報實測結果</div>
+          </div>
+        </div>
+      </div>
+      <div class="rec-ba-wins">
+        <div class="rec-win">✓ 24/7 自動執行</div>
+        <div class="rec-win">✓ 多任務並行</div>
+        <div class="rec-win">✓ 品質一致</div>
+        <div class="rec-win">✓ 主管只看結果</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Legacy rec2 layout removed — kept here for reference only -->
+<div style="display:none">
   <div class="rec2-outer">
     <div class="rec2-tabs">
       <div class="rec2-tb on" onclick="rec2Tab('c',this)">競爭對手分析</div>
@@ -3113,10 +3280,7 @@ html{font-family:'DM Sans','Noto Sans TC',-apple-system,sans-serif;background:#F
       <div style="font-size:14px;color:var(--g500);line-height:1.7">每季度提出 1–2 項新 AI 提案：師資培訓、課程個人化、家長 NPS、營運預測等，確保培幼在 AI 浪潮中持續領先。</div>
     </div>
   </div>
-  <div style="padding:18px 26px;background:linear-gradient(90deg,rgba(0,102,204,0.04),rgba(10,147,150,0.04),rgba(224,122,0,0.04));border-top:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
-    <div style="font-size:13.5px;color:var(--g600);line-height:1.55">✦ Solvyn AI 視培幼為長期合作夥伴，而非單次專案。</div>
-    <div style="font-size:12.5px;color:var(--g400);font-weight:600">期待與培幼一起，把 AI 變成日常營運的一部分。</div>
-  </div>
+  <div style="padding:18px 26px;background:linear-gradient(90deg,rgba(0,102,204,0.04),rgba(10,147,150,0.04),rgba(224,122,0,0.04));border-top:1px solid var(--g100);font-size:13.5px;color:var(--g600);line-height:1.55">✦ Solvyn AI 視培幼為長期合作夥伴，期待與培幼一起，把 AI 變成日常營運的一部分。</div>
 </div>
 
 </main>
@@ -3656,6 +3820,148 @@ function goToModule(id){
     });
   }
 }
+
+// ══════════════════════════════════════
+// AUTO-CYCLE INTERACTIVE DEMOS
+// All demos cycle every 4.5s with a soft fade
+// transition. Pauses when off-screen, resets
+// timer on manual click.
+// ══════════════════════════════════════
+const CYCLE_INTERVAL = 4500;
+const FADE_OUT_MS = 260;
+const FADE_IN_MS = 420;
+
+function autoCycle(rootEl, getItems, fadeEl, intervalMs){
+  if(!rootEl) return;
+  const target = fadeEl || rootEl;
+  // intervalMs can be a number (fixed) or a function (idx) => ms
+  const getInterval = () => {
+    const v = typeof intervalMs === 'function' ? intervalMs(idx) : intervalMs;
+    return v || CYCLE_INTERVAL;
+  };
+  const HOLD_MS = 20000;
+  let idx = 0, timer = null, holdTimer = null, inView = false, programmatic = false, fading = false, runId = 0;
+  const isActive = el => el.classList.contains('on') || el.classList.contains('active');
+  const syncIdx = items => {
+    const i = items.findIndex(isActive);
+    if(i >= 0) idx = i;
+  };
+  const scheduleNext = () => {
+    if(timer){ clearTimeout(timer); }
+    timer = setTimeout(() => { timer = null; advance(); }, getInterval());
+  };
+  const advance = () => {
+    if(fading) return;
+    const items = getItems();
+    if(!items.length){ scheduleNext(); return; }
+    syncIdx(items);
+    const next = (idx + 1) % items.length;
+    fading = true;
+    const myRun = ++runId;
+    // Fade out
+    target.style.transition = `opacity ${FADE_OUT_MS}ms ease-out`;
+    target.style.opacity = '0.2';
+    setTimeout(() => {
+      if(myRun !== runId) return; // cancelled by stop()
+      // Swap content while invisible
+      programmatic = true;
+      try { items[next].click(); } finally { programmatic = false; }
+      idx = next;
+      // Force reflow so the click's DOM mutations are committed before
+      // the next opacity write — otherwise the browser can collapse both
+      // changes and the fade-in is skipped.
+      void target.offsetHeight;
+      target.style.transition = `opacity ${FADE_IN_MS}ms ease-in`;
+      target.style.opacity = '1';
+      setTimeout(() => {
+        if(myRun !== runId) return;
+        fading = false;
+        // Schedule next tick with dwell time based on the new idx
+        if(inView) scheduleNext();
+      }, FADE_IN_MS + 40);
+    }, FADE_OUT_MS);
+  };
+  const start = () => { stop(); scheduleNext(); };
+  const stop = () => {
+    if(timer){ clearTimeout(timer); timer = null; }
+    if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
+    // Invalidate any in-flight advance(): its pending setTimeouts
+    // will see a new runId and bail out instead of overriding the
+    // user's manual selection.
+    runId++;
+    if(fading){
+      target.style.transition = `opacity ${FADE_IN_MS}ms ease-in`;
+      target.style.opacity = '1';
+      fading = false;
+    }
+  };
+  rootEl.addEventListener('click', (e) => {
+    if(programmatic) return;
+    const items = getItems();
+    if(!items.some(el => el === e.target || el.contains(e.target))) return;
+    if(!inView) return;
+    // Manual click: dwell on the user's selection for HOLD_MS,
+    // then advance once and resume normal cycling.
+    stop();
+    holdTimer = setTimeout(() => {
+      holdTimer = null;
+      if(!inView) return;
+      advance();
+      start();
+    }, HOLD_MS);
+  }, true);
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if(en.isIntersecting){ inView = true; start(); }
+      else { inView = false; stop(); }
+    });
+  }, { threshold: 0.25 });
+  io.observe(rootEl);
+}
+
+window.addEventListener('load', () => {
+  // HQ sidebar tabs (分校總覽 / 績效報表 / AI 分析)
+  autoCycle(
+    document.querySelector('.hq-sidebar'),
+    () => [...document.querySelectorAll('.hq-nav-item[onclick*="hqNavTo"]')],
+    document.querySelector('.hq-main')
+  );
+  // HQ filter chips (全部 / 簽約中 / 待關注): click-only, no auto-cycle.
+  // Meal phone steps (餐前 / 餐後 / 營養分析)
+  // 3.5s on steps 1 & 2; 10s on step 3 (give viewers time to read 營養分析)
+  autoCycle(
+    document.querySelector('.meal-phone'),
+    () => [...document.querySelectorAll('.meal-stp-dot')],
+    document.querySelector('.meal-phone-screen'),
+    (i) => i === 2 ? 10000 : 3500
+  );
+  // AI assistant scenarios (家長客服 / 出題系統 / 助教)
+  autoCycle(
+    document.querySelector('.ai-phone-wrap'),
+    () => [...document.querySelectorAll('.ai-sc-btn')],
+    document.querySelector('.ai-phone-frame')
+  );
+  // Branch wizard (5 steps)
+  const brFirst = document.querySelector('.br-step');
+  if(brFirst){
+    autoCycle(
+      brFirst.parentElement,
+      () => [...document.querySelectorAll('.br-step')],
+      document.querySelector('.br-content')
+    );
+  }
+  // Contact-book parent tabs (本週報表 / 長期趨勢分析)
+  autoCycle(
+    document.querySelector('.cb2p-wrap'),
+    () => [...document.querySelectorAll('.cb2p-tb')],
+    document.querySelector('.cb2p-wrap')
+  );
+  // Contact-book period selector (本週 / 本月 / 近三個月 / 近半年):
+  // click-only — auto-cycle is disabled here so the period stays put;
+  // the parent-tab cycler will eventually move users to 長期趨勢分析.
+  // Recruitment tabs were replaced by the before/after layout —
+  // no auto-cycle needed.
+});
 </script>
 </body>
 </html>
